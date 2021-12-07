@@ -9,6 +9,8 @@ services:
 
 build:code:
   stage: install
+  tags:
+    - fargate
   image: decentraland/ci-node:latest
   variables:
     PULUMI_STACK: "website-talent-hub"

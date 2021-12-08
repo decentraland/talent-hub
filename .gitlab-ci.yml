@@ -46,3 +46,5 @@ build:code:
     - dcl-lock-sync
     - dcl-up $PULUMI_STACK
     - dcl-sync-release
+
+    - pulumi stack export $PULUMI_STACK

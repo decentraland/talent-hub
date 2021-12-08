@@ -16,7 +16,7 @@ export = async function main() {
   const access = createUser(serviceName)
 
   const contentBucket = new aws.s3.Bucket(`${serviceName}-website`, {
-    acl: "private",
+    acl: "public-read",
 
     tags: {
       Name: serviceDomain

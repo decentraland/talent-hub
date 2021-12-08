@@ -47,4 +47,4 @@ build:code:
     - dcl-up $PULUMI_STACK
     - dcl-sync-release
 
-    - pulumi stack export --stack $PULUMI_STACK
+    - pulumi stack export --stack "$PULUMI_STACK-$ENVIRONMENT"

@@ -68,7 +68,7 @@ export = async function main() {
     bucketPolicyName: bucketPolicy.urn,
     WS_ACCESS_KEY_ID: access.creds.id,
     AWS_ACCESS_SECRET: access.creds.secret,
-    AWS_REGION: 'us-east-1',
+    AWS_REGION: process.env.AWS_REGION,
     AWS_BUCKET_NAME: contentBucket.bucket,
   }
 }

@@ -46,7 +46,6 @@ export = async function main() {
       "Statement": [
         {
             "Effect": "Allow",
-            "Principal": "*",
             "Action": [
               "s3:PutObject",
               "s3:GetObject",
@@ -54,8 +53,12 @@ export = async function main() {
               "s3:DeleteObject",
               "s3:PutObjectAcl",
             ],
+            "Principal": {
+              "AWS": [user]
+            },
             "Resource": [
-                `arn:aws:s3:::${bucket}/*`
+              `arn:aws:s3:::${bucket}`,
+              `arn:aws:s3:::${bucket}/*`
             ]
         }
       ]

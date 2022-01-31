@@ -3,7 +3,7 @@ import * as aws from '@pulumi/aws'
 import { all } from "@pulumi/pulumi";
 import { env, envTLD } from "dcl-ops-lib/domain";
 // import { buildGatsby } from "decentraland-gatsby-deploy/dist/recepies/buildGatsby";
-import { createUser } from "decentraland-gatsby-deploy/dist/aws/iam";
+import { createUser, addEmailResource } from "decentraland-gatsby-deploy/dist/aws/iam";
 // import { variable } from "decentraland-gatsby-deploy/dist/pulumi/env";
 
 export = async function main() {
@@ -14,6 +14,7 @@ export = async function main() {
   const serviceName = 'talent-hub'
   const serviceDomain = `${serviceName}.decentraland.${envTLD}`
   const access = createUser(serviceName)
+  await addEmailResource(serviceName, access.user, [`decentraland.${envTLD}`])
 
   const contentBucket = new aws.s3.Bucket(`${serviceName}-website`, {
     acl: "public-read",
@@ -41,25 +42,25 @@ export = async function main() {
 
   const bucketPolicy = new aws.s3.BucketPolicy(`${serviceName}-bucket-policy`, {
     bucket: contentBucket.bucket,
-    policy: all([ access.user.arn, contentBucket.bucket ]).apply(([ user, bucket]): aws.iam.PolicyDocument => ({
+    policy: all([access.user.arn, contentBucket.bucket]).apply(([user, bucket]): aws.iam.PolicyDocument => ({
       "Version": "2012-10-17",
       "Statement": [
         {
-            "Effect": "Allow",
-            "Action": [
-              "s3:PutObject",
-              "s3:GetObject",
-              "s3:ListBucket",
-              "s3:DeleteObject",
-              "s3:PutObjectAcl",
-            ],
-            "Principal": {
-              "AWS": [user]
-            },
-            "Resource": [
-              `arn:aws:s3:::${bucket}`,
-              `arn:aws:s3:::${bucket}/*`
-            ]
+          "Effect": "Allow",
+          "Action": [
+            "s3:PutObject",
+            "s3:GetObject",
+            "s3:ListBucket",
+            "s3:DeleteObject",
+            "s3:PutObjectAcl",
+          ],
+          "Principal": {
+            "AWS": [user]
+          },
+          "Resource": [
+            `arn:aws:s3:::${bucket}`,
+            `arn:aws:s3:::${bucket}/*`
+          ]
         }
       ]
     }))
